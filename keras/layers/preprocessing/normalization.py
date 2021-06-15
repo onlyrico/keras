@@ -19,6 +19,7 @@ import tensorflow.compat.v2 as tf
 
 import numpy as np
 from keras import backend
+from keras import layers
 from keras.engine import base_preprocessing_layer
 from tensorflow.python.util.tf_export import keras_export
 
@@ -109,6 +110,11 @@ class Normalization(base_preprocessing_layer.PreprocessingLayer):
 
   def build(self, input_shape):
     super().build(input_shape)
+
+    if all(isinstance(i, tf.TensorShape) for i in input_shape):
+      raise ValueError('Normalization only accepts a single input. If you are '
+                       'passing a python list or tuple as a single input, '
+                       'please convert to a numpy array or `tf.Tensor`.')
 
     input_shape = tf.TensorShape(input_shape).as_list()
     if len(input_shape) == 1:
